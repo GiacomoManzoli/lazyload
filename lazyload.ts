@@ -44,7 +44,7 @@ export const LazyLoad = (function(doc) {
         // Reference to the <head> element (populated lazily).
         head,
         // Requests currently in progress, if any.
-        pending = {},
+        pending: { [x: string]: any } = {},
         // Number of times we've polled to check whether a pending stylesheet has
         // finished loading. If this gets too high, we're probably stalled.
         pollCount = 0,
@@ -64,7 +64,7 @@ export const LazyLoad = (function(doc) {
   @return {HTMLElement}
   @private
   */
-    function createNode(name, attrs) {
+    function createNode(name, attrs = {}) {
         var node = doc.createElement(name),
             attr;
 
@@ -124,7 +124,6 @@ export const LazyLoad = (function(doc) {
             // http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
             async: doc.createElement("script").async === true
         };
-
         (env.webkit = /AppleWebKit\//.test(ua)) ||
             (env.ie = /MSIE|Trident/.test(ua)) ||
             (env.opera = /Opera/.test(ua)) ||
@@ -154,7 +153,7 @@ export const LazyLoad = (function(doc) {
     be executed in this object's context
   @private
   */
-    function load(type, urls, callback, obj, context) {
+    function load(type, urls?, callback?, obj?, context?) {
         var _finish = function() {
                 finish(type);
             },
@@ -389,8 +388,8 @@ export const LazyLoad = (function(doc) {
       will be executed in this object's context
     @static
     */
-        js: function(urls, callback, obj, context) {
+        js: function(urls, callback, obj?, context?) {
             load("js", urls, callback, obj, context);
         }
     };
-})(this.document);
+})(window.document);
